@@ -34,6 +34,7 @@ void() finale_2;
 void() finale_3;
 void() finale_4;
 
+void() standin_idle;
 
 entity	shub;
 
@@ -243,15 +244,49 @@ void() finale_4 =
 	oldo = oldo - '32 264 0';
 	setorigin (n, oldo);
 	n.angles = '0 290 0';
-	n.frame = 1;
+
+	pl = find (world, classname, "player");
+
+	if (pl.weapon == IT_AXE)
+	{
+		n.frame = 17;
+	}
+	else
+	{
+		n.frame = 12;
+	}
+
+	n.walkframe = 0;
+
+	n.nextthink = time + 0.1;
+	n.think = standin_idle;
 
 	remove (self);
 
 	// switch cd track
 	WriteByte (MSG_ALL, SVC_CDTRACK);
-	WriteByte (MSG_ALL, 3);
+	WriteByte (MSG_ALL, 2);
 	WriteByte (MSG_ALL, 3);
 	lightstyle(0, "m");
+};
+
+void() standin_idle = {
+	// holding the gun, back to first frame
+	if (self.walkframe == 4 && self.frame == 16) {
+		self.walkframe = 0;
+		self.frame = 12;
+	}
+
+	// holding the axe, back to first frame
+	if (self.walkframe == 11 && self.frame == 28) {
+		self.walkframe = 0;
+		self.frame = 17;
+	}
+
+	self.walkframe = self.walkframe +1;
+	self.frame = self.frame +1;
+
+	self.nextthink = time + 0.1;
 };
 
 //============================================================================
@@ -295,4 +330,3 @@ void() monster_oldone =
 
 	total_monsters = total_monsters + 1;
 };
-
