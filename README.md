@@ -1,15 +1,10 @@
 # Quake 1 Ending Fix
 
-This simple mod for Quake 1 updates the final scene so that:
+This simple mod for Quake 1 updates the final scene to make it more obvoius Ranger is hacking up shub from the inside, as well as triggering the song "Quake Theme" instead of "Aftermath"
 
- - The song "Quake Theme" is triggered instead of "Aftermath"
- - The player model is shown holding the correct weapon based on what you were using when you entered the slipgate, instead of always holding the axe
- - The player model is shown in a standing pose instead of a running pose
- - The player model is shown doing the correct idle animation, instead of standing perfectly still
+The development of this mod can be seen in this video - https://youtu.be/S0OMBL5HamE
 
-The development of this mod can be seen in this video - https://youtu.be/DEkjDkr0Qmc
-
-_Note:_ In the video I miscounted the number of frames in the axe stand animation, missing the last few frames. The files here fix that and use all the axe stand frames.
+_Note:_ If you're looking for the first version of this fix, that just fixed the final standing animation, check out the v1 tags
 
 ## Installation and running
 

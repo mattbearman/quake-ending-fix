@@ -34,7 +34,7 @@ void() finale_2;
 void() finale_3;
 void() finale_4;
 
-entity	shub;
+entity	shub, player_standin;
 
 $frame old1 old2 old3 old4 old5 old6 old7 old8 old9
 $frame old10 old11 old12 old13 old14 old15 old16 old17 old18 old19
@@ -112,7 +112,7 @@ void() old_thrash15       =[      $shake15, old_thrash16      ]
 {
 	lightstyle(0, "m");
 	self.cnt = self.cnt + 1;
-	if (self.cnt != 3)
+	if (self.cnt != 4)
 		self.think = old_thrash1;
 };
 void() old_thrash16       =[      $shake16, old_thrash17      ] {lightstyle(0, "g");};
@@ -164,7 +164,7 @@ void() finale_1 =
 
 	// wait for 1 second
 	timer = spawn();
-	timer.nextthink = time + 1;
+	timer.nextthink = time;
 	timer.think = finale_2;
 };
 
@@ -180,9 +180,7 @@ void() finale_2 =
 	WriteCoord (MSG_BROADCAST, o_y);
 	WriteCoord (MSG_BROADCAST, o_z);
 
-	sound (shub, CHAN_VOICE, "misc/r_tele1.wav", 1, ATTN_NORM);
-
-	self.nextthink = time + 2;
+	self.nextthink = time + 1;
 	self.think = finale_3;
 };
 
@@ -190,8 +188,13 @@ void() finale_3 =
 {
 	// start shub thrashing wildly
 	shub.think = old_thrash1;
-	sound (shub, CHAN_VOICE, "boss2/death.wav", 1, ATTN_NORM);
+	sound (shub, CHAN_VOICE, "boss2/death.wav", 0.8, ATTN_NORM);
 	lightstyle(0, "abcdefghijklmlkjihgfedcb");
+
+	player_standin = entity_standin(shub.origin - '32 264 0', '0 310 0');
+
+	player_standin.think = standin_attack;
+	player_standin.nextthink = time;
 };
 
 void() finale_4 =
@@ -200,9 +203,8 @@ void() finale_4 =
 	local vector oldo;
 	local float x, y, z;
 	local float r;
-	local entity n, pl;
 
-	sound (self, CHAN_VOICE, "boss2/pop2.wav", 1, ATTN_NORM);
+	sound (self, CHAN_VOICE, "boss2/pop2.wav", 0.8, ATTN_NORM);
 
 	oldo = self.origin;
 
@@ -237,16 +239,8 @@ void() finale_4 =
 	WriteString (MSG_ALL, "Congratulations and well done! You have\nbeaten the hideous Shub-Niggurath, and\nher hundreds of ugly changelings and\nmonsters. You have proven that your\nskill and your cunning are greater than\nall the powers of Quake. You are the\nmaster now. Id Software salutes you.");
 
 	// put a player model down
-	n = spawn();
-	setmodel (n, "progs/player.mdl");
-	oldo = oldo - '32 264 0';
-	setorigin (n, oldo);
-	n.angles = '0 290 0';
-
-	pl = find (world, classname, "player");
-	n.nextthink = time;
-	n.weapon = pl.weapon;
-	n.think = player_stand1;
+	player_standin.think = standin_show;
+	player_standin.nextthink = time;
 
 	remove (self);
 
@@ -280,6 +274,17 @@ void() monster_oldone =
 	precache_sound2 ("boss2/idle.wav");
 	precache_sound2 ("boss2/sight.wav");
 	precache_sound2 ("boss2/pop2.wav");
+
+  precache_sound("shambler/smack.wav");
+	precache_sound("zombie/z_miss.wav");
+	precache_sound("player/tornoff2.wav");
+	precache_sound2("blob/hit1.wav");
+
+	precache_sound("knight/sword2.wav");
+	precache_sound("zombie/z_shot1.wav");
+	precache_sound("knight/sword1.wav");
+
+	precache_sound("player/gasp1.wav");
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
