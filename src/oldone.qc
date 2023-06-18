@@ -34,8 +34,6 @@ void() finale_2;
 void() finale_3;
 void() finale_4;
 
-void() standin_idle;
-
 entity	shub;
 
 $frame old1 old2 old3 old4 old5 old6 old7 old8 old9
@@ -202,7 +200,7 @@ void() finale_4 =
 	local vector oldo;
 	local float x, y, z;
 	local float r;
-	local entity n;
+	local entity n, pl;
 
 	sound (self, CHAN_VOICE, "boss2/pop2.wav", 1, ATTN_NORM);
 
@@ -246,20 +244,9 @@ void() finale_4 =
 	n.angles = '0 290 0';
 
 	pl = find (world, classname, "player");
-
-	if (pl.weapon == IT_AXE)
-	{
-		n.frame = 17;
-	}
-	else
-	{
-		n.frame = 12;
-	}
-
-	n.walkframe = 0;
-
-	n.nextthink = time + 0.1;
-	n.think = standin_idle;
+	n.nextthink = time;
+	n.weapon = pl.weapon;
+	n.think = player_stand1;
 
 	remove (self);
 
@@ -268,25 +255,6 @@ void() finale_4 =
 	WriteByte (MSG_ALL, 2);
 	WriteByte (MSG_ALL, 3);
 	lightstyle(0, "m");
-};
-
-void() standin_idle = {
-	// holding the gun, back to first frame
-	if (self.walkframe == 4 && self.frame == 16) {
-		self.walkframe = 0;
-		self.frame = 12;
-	}
-
-	// holding the axe, back to first frame
-	if (self.walkframe == 11 && self.frame == 28) {
-		self.walkframe = 0;
-		self.frame = 17;
-	}
-
-	self.walkframe = self.walkframe +1;
-	self.frame = self.frame +1;
-
-	self.nextthink = time + 0.1;
 };
 
 //============================================================================
